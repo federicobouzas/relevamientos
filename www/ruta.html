@@ -1,0 +1,10 @@
+<ion-view view-title="Ruta #1" ng-controller="RutaController as rutaCtrl">
+    <ion-content class="has-header">
+        <div class="list">
+            <a class="item item-icon-right" ng-repeat="relevamiento in relevamientos" href="#/relevamiento">
+                <i class="icon ion-ios-arrow-right"></i>
+                {{relevamiento.fecha}} - {{relevamiento.direccion}}
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

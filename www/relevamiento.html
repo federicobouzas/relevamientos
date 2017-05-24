@@ -1,0 +1,24 @@
+<ion-view view-title="Relevamiento" ng-controller="RelevamientoController as relevaiento">
+    <ion-content class="has-header">
+        <ion-list>
+            <ion-item><strong>Dirección:</strong> {{relevamiento.direccion}}</ion-item>
+            <ion-item><strong>Prestación:</strong> {{relevamiento.prestacion}}</ion-item>
+            <label class="item item-input">
+                <textarea ng-model="relevamiento.observaciones" placeholder="Observaciones"></textarea>
+            </label>
+            <div class="row item item-body">
+                <div class="col col-33" ng-repeat="(key, foto) in fotos">
+                    <!--<img class="full-image" ng-src="data:image/jpeg;base64,{{foto}}" ng-click="borrarFoto(key);">-->
+                    <img class="full-image" ng-src="{{foto}}" ng-click="borrarFoto(key);">
+                </div>
+            </div>
+            <div class="text-center padding">
+                <button class="button button-balanced" ng-click="tomarFoto()">Cámara</button>
+                <button class="button button-balanced" ng-click="seleccionarFoto()">Fotos</button>
+            </div>
+            <div class="padding">
+                <button class="button button-block button-energized" ng-click="guardar()">Guardar</button>
+            </div>
+        </ion-list>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,10 @@
+<ion-view view-title="Rutas" ng-controller="RutasController as rutasCtrl">
+    <ion-content class="has-header">
+        <div class="list">
+            <a class="item item-icon-right" ng-repeat="ruta in rutas" ng-class="ruta.realizada" href="#/ruta">
+                <i class="icon ion-ios-arrow-right"></i>
+                Ruta #{{ruta.$id}}
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

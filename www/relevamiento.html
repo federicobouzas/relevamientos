@@ -3,6 +3,11 @@
         <ion-list>
             <ion-item><strong>Dirección:</strong> {{relevamiento.direccion}}</ion-item>
             <ion-item><strong>Prestación:</strong> {{relevamiento.prestacion}}</ion-item>
+            <ion-item>
+                <ng-map style="width:100%; height: 200px;" center="{{relevamiento.coordenadas}}" draggable="false" max-zoom="15" min-zoom="15" disable-default-u-i="true" zoom-control="false">
+                    <marker position="[{{relevamiento.coordenadas}}]" animation="Animation.BOUNCE"></marker>
+                </ng-map>
+            </ion-item>
             <label class="item item-input">
                 <span class="input-label"><strong>Observaciones:</strong></span>
                 <textarea ng-model="relevamiento.observaciones"></textarea>

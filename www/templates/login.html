@@ -1,0 +1,17 @@
+<ion-view view-title="Relevamiento" ng-controller="LoginController as loginCtrl">
+    <ion-content class="has-header">
+        <form ng-submit="login()">
+            <label class="item item-input">
+                <i class="icon ion-email placeholder-icon"></i>
+                <input type="text" placeholder="Teléfono" ng-model="user.email" />
+            </label>
+            <label class="item item-input">
+                <i class="icon ion-key placeholder-icon"></i>
+                <input type="password" placeholder="Clave" ng-model="user.clave" />
+            </label>
+            <div class="padding">
+                <input type="submit" class="button button-block button-balanced" value="Ingresar" />
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

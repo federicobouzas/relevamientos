@@ -8,18 +8,22 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
         .config(function ($stateProvider, $urlRouterProvider) {
             $stateProvider
                     .state('rutas', {
-                        url: '/',
-                        templateUrl: 'rutas.html'
+                        url: '/rutas',
+                        templateUrl: 'templates/rutas.html'
                     })
                     .state('ruta', {
                         url: '/ruta/{ruta_id}',
-                        templateUrl: 'ruta.html'
+                        templateUrl: 'templates/ruta.html'
                     })
                     .state('relevamiento', {
                         url: '/ruta/{ruta_id}/relevamiento/{relevamiento_id}',
-                        templateUrl: 'relevamiento.html'
+                        templateUrl: 'templates/relevamiento.html'
+                    })
+                    .state('login', {
+                        url: '/login',
+                        templateUrl: 'templates/login.html'
                     });
-            $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/login');
         })
 
         .run(function ($ionicPlatform, $rootScope, $ionicLoading) {
@@ -51,22 +55,52 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             $rootScope.firebase = firebase.initializeApp(config);
         })
 
-        .controller('RutasController', function ($rootScope, $scope, $firebaseArray) {
+        .controller('LoginController', function ($rootScope, $scope, $ionicHistory, $state, $ionicPopup, $ionicLoading) {
+            $scope.user = {email: "federicobouzas@gmail.com", clave: "123456"};
+            $scope.login = function () {
+                $ionicLoading.show({template: 'Cargando relevador...'});
+                $rootScope.firebase.auth().signInWithEmailAndPassword($scope.user.email, $scope.user.clave).catch(function (error) {
+                    $ionicPopup.alert({
+                        title: 'Error', template: error.message, buttons: [{text: 'OK', type: 'button-balanced'}]
+                    });
+                    $ionicLoading.hide();
+                }).then(function (user) {
+                    if (user) {
+                        $ionicLoading.hide();
+                        $ionicHistory.nextViewOptions({
+                            disableBack: true,
+                            historyRoot: true
+                        });
+                        $state.go("rutas");
+                    }
+                });
+            };
+        })
+
+        .controller('RutasController', function ($rootScope, $scope, $ionicHistory, $ionicLoading, $firebaseArray) {
+            $ionicLoading.show({template: 'Cargando rutas...'});
             var rutasRef = $rootScope.firebase.database().ref().child("rutas")
                     .orderByChild('encargado')
                     .equalTo("federicobouzas@gmail.com");
             $scope.rutas = $firebaseArray(rutasRef);
+            $scope.rutas.$loaded().then(function () {
+                $ionicLoading.hide();
+            });
         })
 
-        .controller('RutaController', function ($rootScope, $scope, $firebaseArray, $stateParams) {
+        .controller('RutaController', function ($rootScope, $scope, $ionicLoading, $firebaseArray, $stateParams) {
+            $ionicLoading.show({template: 'Cargando ruta...'});
+            $scope.ruta_id = $stateParams.ruta_id;
             var relevamientosRef = $rootScope.firebase.database().ref().child("rutas/" + $stateParams.ruta_id + "/relevamientos");
             $scope.relevamientos = $firebaseArray(relevamientosRef);
-            $scope.ruta_id = $stateParams.ruta_id;
+            $scope.relevamientos.$loaded().then(function () {
+                $ionicLoading.hide();
+            });
         })
 
         .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $stateParams,
                 $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory) {
-            $ionicLoading.show({template: 'Cargando...'});
+            $ionicLoading.show({template: 'Cargando relevamiento ...'});
             var relevamientoRef = $rootScope.firebase.database().ref().child("/rutas/" + $stateParams.ruta_id + "/relevamientos/" + $stateParams.relevamiento_id);
             var storageRef = $rootScope.firebase.storage().ref().child($stateParams.ruta_id);
             $scope.fotos = [];

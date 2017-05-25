@@ -1,10 +1,18 @@
-<ion-view view-title="Ruta #1" ng-controller="RutaController as rutaCtrl">
+<ion-view view-title="Ruta #{{ruta_id}}" ng-controller="RutaController as rutaCtrl">
     <ion-content class="has-header">
         <div class="list">
-            <a class="item item-icon-right" ng-repeat="relevamiento in relevamientos" href="#/relevamiento">
-                <i class="icon ion-ios-arrow-right"></i>
-                {{relevamiento.fecha}} - {{relevamiento.direccion}}
-            </a>
+            <div ng-repeat="relevamiento in relevamientos">
+                <a class="item item-icon-right" ng-hide="relevamiento.realizado" ng-href="#/ruta/{{ruta_id}}/relevamiento/{{relevamiento.$id}}">
+                    <i class="icon ion-ios-arrow-right"></i>
+                    <h2>{{relevamiento.direccion}}</h2>
+                    <p>{{relevamiento.prestacion}}</p>
+                </a>
+                <span class="item item-icon-right" ng-show="relevamiento.realizado">
+                    <i class="icon ion-checkmark-round balanced"></i>
+                    <h2>{{relevamiento.direccion}}</h2>
+                    <p>{{relevamiento.prestacion}}</p>
+                </span>
+            </div>
         </div>
     </ion-content>
 </ion-view>

@@ -4,11 +4,11 @@
             <ion-item><strong>Dirección:</strong> {{relevamiento.direccion}}</ion-item>
             <ion-item><strong>Prestación:</strong> {{relevamiento.prestacion}}</ion-item>
             <label class="item item-input">
-                <textarea ng-model="relevamiento.observaciones" placeholder="Observaciones"></textarea>
+                <span class="input-label"><strong>Observaciones:</strong></span>
+                <textarea ng-model="relevamiento.observaciones"></textarea>
             </label>
-            <div class="row item item-body">
+            <div class="row item item-body" ng-show="fotos.length">
                 <div class="col col-33" ng-repeat="(key, foto) in fotos">
-                    <!--<img class="full-image" ng-src="data:image/jpeg;base64,{{foto}}" ng-click="borrarFoto(key);">-->
                     <img class="full-image" ng-src="{{foto}}" ng-click="borrarFoto(key);">
                 </div>
             </div>

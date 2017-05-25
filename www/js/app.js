@@ -12,11 +12,11 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova'])
                         templateUrl: 'rutas.html'
                     })
                     .state('ruta', {
-                        url: '/ruta',
+                        url: '/ruta/{ruta_id}',
                         templateUrl: 'ruta.html'
                     })
                     .state('relevamiento', {
-                        url: '/relevamiento',
+                        url: '/ruta/{ruta_id}/relevamiento/{relevamiento_id}',
                         templateUrl: 'relevamiento.html'
                     });
             $urlRouterProvider.otherwise('/');
@@ -58,16 +58,17 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova'])
             $scope.rutas = $firebaseArray(rutasRef);
         })
 
-        .controller('RutaController', function ($rootScope, $scope, $firebaseArray) {
-            var relevamientosRef = $rootScope.firebase.database().ref().child("rutas/1/relevamientos");
+        .controller('RutaController', function ($rootScope, $scope, $firebaseArray, $stateParams) {
+            var relevamientosRef = $rootScope.firebase.database().ref().child("rutas/" + $stateParams.ruta_id + "/relevamientos");
             $scope.relevamientos = $firebaseArray(relevamientosRef);
+            $scope.ruta_id = $stateParams.ruta_id;
         })
 
-        .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $firebaseArray,
-                $state, $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory) {
+        .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $stateParams,
+                $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory) {
             $ionicLoading.show({template: 'Cargando...'});
-            var relevamientoRef = $rootScope.firebase.database().ref().child("/rutas/1/relevamientos/1");
-            var storageRef = $rootScope.firebase.storage().ref().child("1");
+            var relevamientoRef = $rootScope.firebase.database().ref().child("/rutas/" + $stateParams.ruta_id + "/relevamientos/" + $stateParams.relevamiento_id);
+            var storageRef = $rootScope.firebase.storage().ref().child($stateParams.ruta_id);
             $scope.fotos = [];
             $scope.relevamiento = $firebaseObject(relevamientoRef);
             $scope.relevamiento.$loaded().then(function () {

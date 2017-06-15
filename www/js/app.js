@@ -56,7 +56,8 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
         })
 
         .controller('LoginController', function ($rootScope, $scope, $ionicHistory, $state, $ionicPopup, $ionicLoading) {
-            $scope.user = {email: "federicobouzas@gmail.com", clave: "123456"};
+            //$scope.user = {email: "federicobouzas@gmail.com", clave: "123456"};
+            $scope.user = {};
             $scope.login = function () {
                 $ionicLoading.show({template: 'Cargando relevador...'});
                 $rootScope.firebase.auth().signInWithEmailAndPassword($scope.user.email, $scope.user.clave).catch(function (error) {

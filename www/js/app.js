@@ -56,8 +56,8 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
         })
 
         .controller('LoginController', function ($rootScope, $scope, $ionicHistory, $state, $ionicPopup, $ionicLoading) {
-            //$scope.user = {email: "federicobouzas@gmail.com", clave: "123456"};
-            $scope.user = {};
+            //$rootScope.user = {email: "sgranda.gcba@gmail.com", clave: "123456"};
+            $rootScope.user = {};
             $scope.login = function () {
                 $ionicLoading.show({template: 'Cargando relevador...'});
                 $rootScope.firebase.auth().signInWithEmailAndPassword($scope.user.email, $scope.user.clave).catch(function (error) {
@@ -82,7 +82,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             $ionicLoading.show({template: 'Cargando rutas...'});
             var rutasRef = $rootScope.firebase.database().ref().child("rutas")
                     .orderByChild('encargado')
-                    .equalTo("federicobouzas@gmail.com");
+                    .equalTo($rootScope.user.email);
             $scope.rutas = $firebaseArray(rutasRef);
             $scope.rutas.$loaded().then(function () {
                 $ionicLoading.hide();
@@ -99,7 +99,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             });
         })
 
-        .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $stateParams,
+        .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $stateParams, $state,
                 $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory) {
             $ionicLoading.show({template: 'Cargando relevamiento ...'});
             var relevamientoRef = $rootScope.firebase.database().ref().child("/rutas/" + $stateParams.ruta_id + "/relevamientos/" + $stateParams.relevamiento_id);
@@ -154,17 +154,44 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                     }
                 });
             };
+            var chequearRutaFinalizada = function () {
+                var rutaRef = $rootScope.firebase.database().ref().child("/rutas/" + $stateParams.ruta_id);
+                var ruta = $firebaseObject(rutaRef);
+                ruta.$loaded().then(function () {
+                    var rutaRealizada = true;
+                    for (var i in ruta.relevamientos) {
+                        if (!ruta.relevamientos[i].realizado) {
+                            rutaRealizada = false;
+                            break;
+                        }
+                    }
+                    if (rutaRealizada) {
+                        ruta.realizada = true;
+                        ruta.$save();
+                        $state.go("rutas");
+                    }
+                });
+            };
+            var guardarFireBase = function () {
+                $scope.relevamiento.realizado = true;
+                $scope.relevamiento.$save().then(function (ref) {
+                    chequearRutaFinalizada();
+                });
+            };
             $scope.guardar = function () {
                 var remaining = $scope.fotos.length;
-                for (var i in $scope.fotos) {
-                    var nombre = Math.round(Math.random() * 10000000000000000);
-                    storageRef.child(nombre + ".jpeg").putString($scope.fotos[i], "data_url").then(function (snapshot) {
-                        $scope.relevamiento.fotos[snapshot.a.name.substr(0, snapshot.a.name.length - 5)] = snapshot.a.downloadURLs[0];
-                        if (--remaining === 0) {
-                            $scope.relevamiento.realizado = true;
-                            $scope.relevamiento.$save();
-                        }
-                    });
+                if (remaining) {
+                    for (var i in $scope.fotos) {
+                        var nombre = Math.round(Math.random() * 10000000000000000);
+                        storageRef.child(nombre + ".jpeg").putString($scope.fotos[i], "data_url").then(function (snapshot) {
+                            $scope.relevamiento.fotos[snapshot.a.name.substr(0, snapshot.a.name.length - 5)] = snapshot.a.downloadURLs[0];
+                            if (--remaining === 0) {
+                                guardarFireBase();
+                            }
+                        });
+                    }
+                } else {
+                    guardarFireBase();
                 }
                 $ionicHistory.goBack();
             };

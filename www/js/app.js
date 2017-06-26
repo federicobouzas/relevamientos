@@ -15,6 +15,10 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                         url: '/ruta/{ruta_id}',
                         templateUrl: 'templates/ruta.html'
                     })
+                    .state('mapa-ruta', {
+                        url: '/mapa-ruta/{ruta_id}',
+                        templateUrl: 'templates/mapa-ruta.html'
+                    })
                     .state('relevamiento', {
                         url: '/ruta/{ruta_id}/relevamiento/{relevamiento_id}',
                         templateUrl: 'templates/relevamiento.html'
@@ -99,6 +103,29 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             });
         })
 
+        .controller('MapaRutaController', function ($rootScope, $scope, $ionicLoading, $firebaseObject, $firebaseArray, $stateParams) {
+            $ionicLoading.show({template: 'Cargando mapa...'});
+            var remaining = 2;
+            document.querySelector('#map').style.height = window.innerHeight + "px";
+            $scope.ruta_id = $stateParams.ruta_id;
+            var rutaRef = $rootScope.firebase.database().ref().child("rutas/" + $stateParams.ruta_id);
+            $scope.ruta = $firebaseObject(rutaRef);
+            $scope.ruta.$loaded().then(function () {
+                var coords = $scope.ruta.centro.split(",");
+                $scope.lat = coords[0];
+                $scope.lng = coords[1];
+                if (--remaining == 0) {
+                    $ionicLoading.hide();
+                }
+            });
+            $scope.relevamientos = $firebaseArray(rutaRef.child("relevamientos"));
+            $scope.relevamientos.$loaded().then(function () {
+                if (--remaining == 0) {
+                    $ionicLoading.hide();
+                }
+            });
+        })
+
         .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $stateParams,
                 $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory) {
             $ionicLoading.show({template: 'Cargando relevamiento ...'});
@@ -133,6 +160,18 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                         sourceType: Camera.PictureSourceType.CAMERA,
                         encodingType: Camera.EncodingType.JPEG,
                         saveToPhotoAlbum: false,
+                        correctOrientation: true
+                    };
+                    $cordovaCamera.getPicture(options).then(function (imageData) {
+                        $scope.fotos.push("data:image/jpeg;base64," + imageData);
+                    });
+                }
+            };
+            $scope.seleccionarFoto = function () {
+                if (typeof Camera != "undefined") {
+                    var options = {
+                        destinationType: Camera.DestinationType.DATA_URL,
+                        sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
                         correctOrientation: true
                     };
                     $cordovaCamera.getPicture(options).then(function (imageData) {

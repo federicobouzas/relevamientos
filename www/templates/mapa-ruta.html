@@ -1,0 +1,12 @@
+<ion-view hide-tabs view-title="Ruta #{{ruta_id}}" ng-controller="MapaRutaController as mapaRutaCtrl">
+    <ion-nav-bar class="bar-energized">
+        <ion-nav-back-button>Ruta</ion-nav-back-button>
+        <h1 class="title">Mapa Ruta #{{ruta_id}}</h1>
+    </ion-nav-bar>
+    <ion-content class="has-header">
+        <ng-map id="map" style="width:100%; height: 400px;" center="[{{lat}}, {{lng}}]" zoom-to-include-markers="true" disable-default-u-i="true" zoom-control="false">
+            <marker position="current" animation="Animation.BOUNCE"></marker>
+            <marker ng-repeat="relevamiento in relevamientos" position="[{{relevamiento.coordenadas}}]"></marker>
+        </ng-map>
+    </ion-content>
+</ion-view>

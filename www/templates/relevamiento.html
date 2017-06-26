@@ -1,8 +1,12 @@
 <ion-view view-title="Relevamiento" ng-controller="RelevamientoController as relevaiento">
+    <ion-nav-bar class="bar-energized">
+        <ion-nav-back-button>Ruta</ion-nav-back-button>
+        <h1 class="title">Relevamiento</h1>
+    </ion-nav-bar>
     <ion-content class="has-header">
         <ion-list>
-            <ion-item><strong>Dirección:</strong> {{relevamiento.direccion}}</ion-item>
-            <ion-item><strong>Prestación:</strong> {{relevamiento.prestacion}}</ion-item>
+            <div class="item item-text-wrap"><strong>Dirección:</strong> {{relevamiento.direccion}}</div>
+            <div class="item item-text-wrap"><strong>Prestación:</strong> {{relevamiento.prestacion}}</div>
             <ion-item>
                 <ng-map style="width:100%; height: 200px;" center="{{relevamiento.coordenadas}}" draggable="false" max-zoom="15" min-zoom="15" disable-default-u-i="true" zoom-control="false">
                     <marker position="[{{relevamiento.coordenadas}}]" animation="Animation.BOUNCE"></marker>

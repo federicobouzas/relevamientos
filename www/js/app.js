@@ -49,12 +49,12 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                 $ionicLoading.hide();
             });
             var config = {
-                apiKey: "AIzaSyDBQJJM8vDMcKLde8FRQAmZtIq2vhwO2R0",
-                authDomain: "relevamientos-b26d9.firebaseapp.com",
-                databaseURL: "https://relevamientos-b26d9.firebaseio.com",
-                projectId: "relevamientos-b26d9",
-                storageBucket: "relevamientos-b26d9.appspot.com",
-                messagingSenderId: "235749037741"
+                apiKey: "AIzaSyBTq2oZM-29V0c_rMsy_3j0ljxbwBi9pQ0",
+                authDomain: "relevamientos-cac9b.firebaseapp.com",
+                databaseURL: "https://relevamientos-cac9b.firebaseio.com",
+                projectId: "relevamientos-cac9b",
+                storageBucket: "relevamientos-cac9b.appspot.com",
+                messagingSenderId: "180000052860"
             };
             $rootScope.firebase = firebase.initializeApp(config);
         })
@@ -213,6 +213,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             };
             var guardarFireBase = function () {
                 $scope.relevamiento.realizado = true;
+                $scope.relevamiento.fecha_relevado = Math.trunc((new Date().getTime())/1000);
                 $scope.relevamiento.$save().then(function (ref) {
                     chequearRutaFinalizada();
                 });

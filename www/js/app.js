@@ -48,13 +48,21 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                 }
                 $ionicLoading.hide();
             });
+//            var config = {
+//                apiKey: "AIzaSyDBQJJM8vDMcKLde8FRQAmZtIq2vhwO2R0",
+//                authDomain: "relevamientos-b26d9.firebaseapp.com",
+//                databaseURL: "https://relevamientos-b26d9.firebaseio.com",
+//                projectId: "relevamientos-b26d9",
+//                storageBucket: "relevamientos-b26d9.appspot.com",
+//                messagingSenderId: "235749037741"
+//            };
             var config = {
-                apiKey: "AIzaSyDBQJJM8vDMcKLde8FRQAmZtIq2vhwO2R0",
-                authDomain: "relevamientos-b26d9.firebaseapp.com",
-                databaseURL: "https://relevamientos-b26d9.firebaseio.com",
-                projectId: "relevamientos-b26d9",
-                storageBucket: "relevamientos-b26d9.appspot.com",
-                messagingSenderId: "235749037741"
+                apiKey: "AIzaSyDQjFlguFrchn2lHVaxgEBj3alYXJZ9gjI",
+                authDomain: "relevamientos-desarrollo.firebaseapp.com",
+                databaseURL: "https://relevamientos-desarrollo.firebaseio.com",
+                projectId: "relevamientos-desarrollo",
+                storageBucket: "relevamientos-desarrollo.appspot.com",
+                messagingSenderId: "977903626794"
             };
             $rootScope.firebase = firebase.initializeApp(config);
         })
@@ -64,6 +72,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             $rootScope.user = {};
             $scope.login = function () {
                 $ionicLoading.show({template: 'Cargando relevador...'});
+                $scope.user.email = $scope.user.email.toLowerCase();
                 $rootScope.firebase.auth().signInWithEmailAndPassword($scope.user.email, $scope.user.clave).catch(function (error) {
                     $ionicPopup.alert({
                         title: 'Error', template: error.message, buttons: [{text: 'OK', type: 'button-balanced'}]

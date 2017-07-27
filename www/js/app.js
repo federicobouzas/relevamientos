@@ -222,7 +222,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             };
             var guardarFireBase = function () {
                 $scope.relevamiento.realizado = true;
-                $scope.relevamiento.fecha_relevado = Math.trunc((new Date().getTime()) / 1000);
+                $scope.relevamiento.fecha_relevado = parseInt((new Date().getTime()) / 1000);
                 $scope.relevamiento.$save().then(function (ref) {
                     chequearRutaFinalizada();
                 });

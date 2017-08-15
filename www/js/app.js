@@ -64,12 +64,15 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                 storageBucket: "relevamientos-desarrollo.appspot.com",
                 messagingSenderId: "977903626794"
             };
-            $rootScope.firebase = firebase.initializeApp(config);
+            $rootScope.firebase = firebase.initializeApp(configDev);
         })
 
         .controller('LoginController', function ($rootScope, $scope, $ionicHistory, $state, $ionicPopup, $ionicLoading) {
-            //$rootScope.user = {email: "sgranda.gcba@gmail.com", clave: "123456"};
             $rootScope.user = {};
+            var ultimoMailLogueado = localStorage.getItem("email");
+            if (ultimoMailLogueado) {
+                $scope.user.email = ultimoMailLogueado;
+            }
             $scope.login = function () {
                 $ionicLoading.show({template: 'Cargando relevador...'});
                 $scope.user.email = $scope.user.email.toLowerCase();
@@ -80,6 +83,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                     $ionicLoading.hide();
                 }).then(function (user) {
                     if (user) {
+                        localStorage.setItem("email", $scope.user.email);
                         $ionicLoading.hide();
                         $ionicHistory.nextViewOptions({
                             disableBack: true,
@@ -168,7 +172,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                         destinationType: Camera.DestinationType.DATA_URL,
                         sourceType: Camera.PictureSourceType.CAMERA,
                         encodingType: Camera.EncodingType.JPEG,
-                        saveToPhotoAlbum: false,
+                        saveToPhotoAlbum: true,
                         correctOrientation: true
                     };
                     $cordovaCamera.getPicture(options).then(function (imageData) {

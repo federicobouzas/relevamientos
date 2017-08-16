@@ -140,7 +140,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
         })
 
         .controller('RelevamientoController', function ($rootScope, $scope, $firebaseObject, $stateParams, $state,
-                $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory) {
+                $ionicLoading, $cordovaCamera, $ionicActionSheet, $ionicHistory, $cordovaImagePicker, $ionicPopup) {
             $ionicLoading.show({template: 'Cargando relevamiento ...'});
             var relevamientoRef = $rootScope.firebase.database().ref().child("/rutas/" + $stateParams.ruta_id + "/relevamientos/" + $stateParams.relevamiento_id);
             var storageRef = $rootScope.firebase.storage().ref().child($stateParams.ruta_id);
@@ -227,21 +227,33 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
             var guardarFireBase = function () {
                 $scope.relevamiento.realizado = true;
                 $scope.relevamiento.fecha_relevado = parseInt((new Date().getTime()) / 1000);
-                $scope.relevamiento.$save().then(function (ref) {
-                    chequearRutaFinalizada();
-                });
+                $scope.relevamiento.$save()
+                        .then(function (ref) {
+                            chequearRutaFinalizada();
+                        })
+                        .catch(function (error) {
+                            $ionicPopup.alert({
+                                title: 'Error', template: error.message, buttons: [{text: 'OK', type: 'button-balanced'}]
+                            });
+                        });
             };
             $scope.guardar = function () {
                 var remaining = $scope.fotos.length;
                 if (remaining) {
                     for (var i in $scope.fotos) {
                         var nombre = Math.round(Math.random() * 10000000000000000);
-                        storageRef.child(nombre + ".jpeg").putString($scope.fotos[i], "data_url").then(function (snapshot) {
-                            $scope.relevamiento.fotos[snapshot.a.name.substr(0, snapshot.a.name.length - 5)] = snapshot.a.downloadURLs[0];
-                            if (--remaining === 0) {
-                                guardarFireBase();
-                            }
-                        });
+                        storageRef.child(nombre + ".jpeg").putString($scope.fotos[i], "data_url")
+                                .then(function (snapshot) {
+                                    $scope.relevamiento.fotos[snapshot.a.name.substr(0, snapshot.a.name.length - 5)] = snapshot.a.downloadURLs[0];
+                                    if (--remaining === 0) {
+                                        guardarFireBase();
+                                    }
+                                })
+                                .catch(function (error) {
+                                    $ionicPopup.alert({
+                                        title: 'Error', template: error.message, buttons: [{text: 'OK', type: 'button-balanced'}]
+                                    });
+                                });
                     }
                 } else {
                     guardarFireBase();
@@ -262,4 +274,20 @@ function toDataURL(url, callback) {
     xhr.open('GET', url);
     xhr.responseType = 'blob';
     xhr.send();
+}
+
+function convertImgToBase64URL(url, callback) {
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function () {
+        var canvas = document.createElement('CANVAS'),
+                ctx = canvas.getContext('2d'), dataURL;
+        canvas.height = this.height;
+        canvas.width = this.width;
+        ctx.drawImage(this, 0, 0);
+        dataURL = canvas.toDataURL("image/jpeg");
+        callback(dataURL);
+        canvas = null;
+    };
+    img.src = url;
 }

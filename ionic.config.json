@@ -1,4 +1,8 @@
 {
   "name": "relevamientos",
-  "app_id": "96cc1787"
+  "app_id": "96cc1787",
+  "type": "ionic1",
+  "watchPatterns": [
+    "scss/**/*"
+  ]
 }

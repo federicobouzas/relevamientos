@@ -232,6 +232,8 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                             chequearRutaFinalizada();
                         })
                         .catch(function (error) {
+                            $scope.relevamiento.realizado = false;
+                            $scope.relevamiento.fecha_relevado = null;
                             $ionicPopup.alert({
                                 title: 'Error', template: error.message, buttons: [{text: 'OK', type: 'button-balanced'}]
                             });

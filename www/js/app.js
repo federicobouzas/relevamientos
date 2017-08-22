@@ -64,7 +64,7 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                 storageBucket: "relevamientos-desarrollo.appspot.com",
                 messagingSenderId: "977903626794"
             };
-            $rootScope.firebase = firebase.initializeApp(configDev);
+            $rootScope.firebase = firebase.initializeApp(config);
         })
 
         .controller('LoginController', function ($rootScope, $scope, $ionicHistory, $state, $ionicPopup, $ionicLoading) {

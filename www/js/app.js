@@ -225,15 +225,14 @@ angular.module('relevamientos', ['ionic', 'firebase', 'ngCordova', 'ngMap'])
                 });
             };
             var guardarFireBase = function () {
-                $scope.relevamiento.realizado = true;
-                $scope.relevamiento.fecha_relevado = parseInt((new Date().getTime()) / 1000);
                 $scope.relevamiento.$save()
                         .then(function (ref) {
-                            chequearRutaFinalizada();
-                        })
+                            $scope.relevamiento.realizado = true;
+                            $scope.relevamiento.fecha_relevado = parseInt((new Date().getTime()) / 1000);
+                            $scope.relevamiento.$save().then(function (ref2) {
+                                chequearRutaFinalizada();
+                            })})
                         .catch(function (error) {
-                            $scope.relevamiento.realizado = false;
-                            $scope.relevamiento.fecha_relevado = null;
                             $ionicPopup.alert({
                                 title: 'Error', template: error.message, buttons: [{text: 'OK', type: 'button-balanced'}]
                             });
@@ -276,20 +275,4 @@ function toDataURL(url, callback) {
     xhr.open('GET', url);
     xhr.responseType = 'blob';
     xhr.send();
-}
-
-function convertImgToBase64URL(url, callback) {
-    var img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = function () {
-        var canvas = document.createElement('CANVAS'),
-                ctx = canvas.getContext('2d'), dataURL;
-        canvas.height = this.height;
-        canvas.width = this.width;
-        ctx.drawImage(this, 0, 0);
-        dataURL = canvas.toDataURL("image/jpeg");
-        callback(dataURL);
-        canvas = null;
-    };
-    img.src = url;
 }
